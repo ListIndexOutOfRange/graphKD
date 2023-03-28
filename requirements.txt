@@ -1,0 +1,7 @@
+matplotlib
+POT
+prettytable
+torch
+torchmetrics
+torchvision
+tqdm

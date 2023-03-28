@@ -22,6 +22,7 @@ class ConvNormAct(nn.Module):
 
 
 class BasicBlock(nn.Module):
+
     def __init__(self, in_features: int, out_features: int, stride: int = 1) -> None:
         super(BasicBlock, self).__init__()
         self.conv1 = ConvNormAct(in_features, out_features, stride=stride, act=True)
@@ -53,7 +54,7 @@ class ResNet(nn.Module):
             large (bool, optional):
                 - if True, embedding is a conv with kernel 7 followed by a maxpool
                 - if False, embedding is a conv with kernel 3
-                (both produce same size of course). Defaults to False.
+                Defaults to False.
         """
         super(ResNet, self).__init__()
         if not large:
@@ -81,18 +82,18 @@ class ResNet(nn.Module):
 
     def forward(self, x: Tensor, return_all_features: bool = False) -> Tensor:
         z = self.pool(self.embedding(x))
-        all_features = [z.detach()]
+        all_features = [z]
         for block in self.blocks:
             z = block(z)
-            all_features.append(z.detach())
-        return (z, all_features) if return_all_features else z
+            all_features.append(z)
+        return z[-1] if not return_all_features else all_features
 
 
 # _______________________________________________________________________________________________ #
 
-def make_resnet(name: str, first_feature_maps: int, large: bool) -> tuple[ResNet, int]:
-    """ returns model, latent_dim. """
-    params = dict(
+
+CONFIGS = dict(
+    params=dict(
         resnet18=[(2, 1, 1), (2, 2, 2), (2, 2, 4), (2, 2, 8)],
         resnet20=[(3, 1, 1), (3, 2, 2), (3, 2, 4)],
         resnet56=[(9, 1, 1), (9, 2, 2), (9, 2, 4)],
@@ -100,8 +101,8 @@ def make_resnet(name: str, first_feature_maps: int, large: bool) -> tuple[ResNet
         resnet110=[(18, 1, 1), (18, 2, 2), (18, 2, 4)],
         wrn28_10=[(4, 1, 10), (4, 2, 20), (4, 2, 40)],
         wrn16_16=[(2, 1, 16), (2, 2, 32), (2, 2, 64)],
-    )
-    output_coeff = dict(
+    ),
+    output_coeff=dict(
         resnet18=8,
         resnet20=4,
         resnet56=4,
@@ -110,7 +111,13 @@ def make_resnet(name: str, first_feature_maps: int, large: bool) -> tuple[ResNet
         wrn28_10=40,
         wrn16_16=64,
     )
-    return ResNet(params[name], first_feature_maps, large), output_coeff[name] * first_feature_maps
+)
+
+
+def make_resnet(name: str, first_feature_maps: int, large: bool) -> tuple[ResNet, int]:
+    """ returns model, latent_dim. """
+    latent_dim = CONFIGS["output_coeff"][name] * first_feature_maps
+    return ResNet(CONFIGS["params"][name], first_feature_maps, large), latent_dim
 
 
 def make_classifier(latent_dim: int, num_classes: int) -> int:

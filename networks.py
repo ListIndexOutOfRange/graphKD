@@ -86,7 +86,7 @@ class ResNet(nn.Module):
         for block in self.blocks:
             z = block(z)
             all_features.append(z)
-        return z[-1] if not return_all_features else all_features
+        return all_features[-1] if not return_all_features else all_features
 
 
 # _______________________________________________________________________________________________ #

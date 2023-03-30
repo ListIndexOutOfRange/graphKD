@@ -1,16 +1,28 @@
 # Graph Knowledge Distillation
 
 
-## Baseline
+## Baseline fully supervised
 
-- **teacher**: resnet 110 | first feature maps: 64 | large = False (27,576,384 params)
-- **student**: resnet 20 | first feature maps: 64 | large = False (4,325,184 params)
+- **student**: efficientnet-b0 (4,135,648 params). Pour reproduire:
+`python train.py --network efficientnet-b0 --dataset cifar100 --label_smoothing 0.1 --max_lr 0.001 --n_epochs 100`
+- **student**: efficientnet-b3 (10,849,932 params). Pour reproduire:
+`python train.py --network efficientnet-b3 --dataset cifar100 --label_smoothing 0.1 --max_lr 0.001 --n_epochs 100`
 
-![](./assets/baseline_cifar100.png)
 
+## train.py args
 
-Le student underfit, il faudrait prendre un truc un poil meilleur mais les trains sont longs, donc peut être plutôt
-prendre un teacher plus faible et faire sur cifar10 (au moins pour dev).
+- `--network`: type=str, default="efficientnet-b0"
+- `--dataset`: type=str, default="cifar100"
+- `--rootdir`: type=str, default="/data/Datasets/cifar100/"
+- `--output_dir`: type=str, default="./logs/"
+- `--swa`: action="store_true"
+- `--label_smoothing`: type=float, default=0.
+- `--mixup_alpha`: type=float, default=0.
+- `--cutmix_alpha`: type=float, default=0.
+- `--batch_size`: type=int, default=256
+- `--max_lr`: type=float, default=0.001
+- `--n_epochs`: type=int, default=100
+- `--name`: type=str, default=None
 
 
 ## Distance

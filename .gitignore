@@ -27,7 +27,7 @@ dist/
 # Data not intended for deployment
 **notebooks**
 logs/
-
+BACKUPS/
 
 # Test & Backups
 *test*.py

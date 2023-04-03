@@ -1,29 +1,38 @@
 # Graph Knowledge Distillation
 
 
+## Change log
+
+### Luc
+
+- Remplacement du code de train par une version bcp plus simple avec que ce qui marche.
+
+
+### Alex
+
+___
+
 ## Baseline fully supervised
 
-- **student**: efficientnet-b0 (4,135,648 params). Pour reproduire:
-`python train.py --network efficientnet-b0 --dataset cifar100 --label_smoothing 0.1 --max_lr 0.001 --n_epochs 100`
-- **student**: efficientnet-b3 (10,849,932 params). Pour reproduire:
-`python train.py --network efficientnet-b3 --dataset cifar100 --label_smoothing 0.1 --max_lr 0.001 --n_epochs 100`
+- **teacher**: resnet50 (23.7M params | top val acc=0.7616). Pour reproduire:
+`python train.py --network resnet50`
+
+- **student**: resnet18 (11.2M params | top val acc=0.7362). Pour reproduire:
+`python train.py --network resnet18`
+
+![](./assets/baseline_cifar100.png)
 
 
 ## train.py args
 
-- `--network`: type=str, default="efficientnet-b0"
-- `--dataset`: type=str, default="cifar100"
-- `--rootdir`: type=str, default="/data/Datasets/cifar100/"
-- `--output_dir`: type=str, default="./logs/"
-- `--swa`: action="store_true"
-- `--label_smoothing`: type=float, default=0.
-- `--mixup_alpha`: type=float, default=0.
-- `--cutmix_alpha`: type=float, default=0.
-- `--batch_size`: type=int, default=256
-- `--max_lr`: type=float, default=0.001
-- `--n_epochs`: type=int, default=100
-- `--name`: type=str, default=None
+- `--network` (str): REQUIRED
+- `--dataset` (str): default="cifar100"
+- `--rootdir` (str): default="/data/Datasets/cifar100/"
+- `--output_dir` (str): default="./logs/"
+- `--batch_size` (int): default=256
+- `--name` (str): default=None
 
+___
 
 ## Distance
 
